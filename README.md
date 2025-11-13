@@ -105,24 +105,47 @@ pip install -r requirements.txt
 ### Модели<a id="publ_models"></a>
 
 В приложении созданы следующие модели:
+- Publication - модель поста. Содержит поля title, text, image, author, created_at, updated_at.
+- Review - модель отзыв. Содержит поля text, author, publication, created_at, updated_at.
 
 ### Контроллеры и ссылки<a id="publ_controllers"></a>
 
-1. Контроллеры модели **Publication**
+1. Контроллеры модели **Publication**.
+   - Контроллер PublicationCreateAPIView для создания поста.
+   - Контроллер PublicationListAPIView для вывода списка своих постов(если admin, то всех).
+   - Контроллер PublicationRetrieveAPIView для вывода информации о посте.
+   - Контроллер PublicationUpdateAPIView для обновления информации поста.
+   - Контроллер PublicationDestroyAPIView для удаления поста.
 
 ```
-Ссылка для контроллера AdCreateAPIView: адрес//create/
+Ссылка для контроллера PublicationCreateAPIView: адрес/publications/create/
+Ссылка для контроллера PublicationListAPIView: адрес/publications/
+Ссылка для контроллера PublicationRetrieveAPIView: адрес/publications/id_поста/detail/
+Ссылка для контроллера PublicationUpdateAPIView: адрес/publications/id_поста/update/
+Ссылка для контроллера PublicationDestroyAPIView: адрес/publications/id_поста/delete/
 ```
 
-2. Контроллеры модели **Review**
+2. Контроллеры модели **Review**.
+   - Контроллер ReviewCreateAPIView для создания отзыва.
+   - Контроллер ReviewListAPIView для вывода списка отзывов.
+   - Контроллер ReviewRetrieveAPIView для вывода информации об отзыве.
+   - Контроллер ReviewUpdateAPIView для обновления информации отзыва.
+   - Контроллер ReviewDestroyAPIView для удаления отзыва.
 
 ```
-Ссылка для контроллера ReviewDestroyAPIView: адрес//
+Ссылка для контроллера ReviewCreateAPIView: адрес/review/create/
+Ссылка для контроллера ReviewListAPIView: адрес/reviews/publication/id_поста/
+Ссылка для контроллера ReviewRetrieveAPIView: адрес/review/id_отзыва/detail/
+Ссылка для контроллера ReviewUpdateAPIView: адрес/review/id_отзыва/update/
+Ссылка для контроллера ReviewDestroyAPIView: адрес/review/id_отзыва/delete/
 ```
 
 ### Сериализация<a id="publ_serialize"></a>
 
 Реализованы следующие сериализации:
+1. **PublicationSerializer** - сериализация модели Publication. Предоставлен доступ ко всем полям, кроме author.
+2. **ReviewSerializer** - сериализация модели Review. Предоставлен доступ ко всем полям, кроме author, created_at,
+updated_at.
 
 ---
 
