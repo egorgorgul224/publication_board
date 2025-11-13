@@ -135,7 +135,7 @@ pip install -r requirements.txt
 ### Модели<a id="users_models"></a>
 
 В приложении созданы следующие модели:
-- User - модель пользователь. Содержит поля email, phone, image, birthday, created_at, updated_at.
+- User - модель пользователь. Содержит поля email, phone, birthdate, created_at, updated_at.
 
 ### Контроллеры и ссылки<a id="users_controllers"></a>
 
@@ -156,19 +156,21 @@ pip install -r requirements.txt
 ### Сериализация<a id="users_serialize"></a>
 
 Реализованы следующие сериализации:
-1. **UserSerializer** - сериализатор для модели User. В Meta класс предоставлен доступ к полям: first_name, last_name,
-phone, email, date_joined.
-2. **RegisterUserSerializer** - сериализатор для контроллера UserCreateAPIView. Используется для регистрации/создания
+1. **UserSerializer** - сериализатор для модели User. В Meta класс предоставлен доступ к полям: email, first_name,
+last_name, birthdate, phone, date_joined.
+2. **UserMinInfoSerializer** - Дополнительная сериализация модели User для обычных пользователей. Предоставлен доступ
+к полям: last_name, first_name, date_joined.
+3. **RegisterUserSerializer** - сериализатор для контроллера UserCreateAPIView. Используется для регистрации/создания
 пользователя. Предоставлен доступ к полям: email.
 
 ### Классы разрешений<a id="users_permissions"></a>
 
 Реализованы следующие разрешения:
-1. **IsAdReviewOwner** - проверяет, что пользователь является создателем объявления или отзыва. Если владелец -
+1. **IsPublicationReviewOwner** - проверяет, что пользователь является создателем поста или отзыва. Если владелец -
 возвращает True, иначе False.
 2. **IsAccountOwner** - проверяет, что пользователь является владельцем аккаунта. Если владелец - возвращает True,
 иначе False.
-3. **IsAdmin** - проверяет, что пользователь является админом. Если админ - возвращает True, иначе False.
+3. **IsAdmin** - проверяет, что пользователь является админом(is_staff). Если админ - возвращает True, иначе False.
 
 ---
 
