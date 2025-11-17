@@ -1,5 +1,4 @@
 from rest_framework import generics
-from rest_framework.filters import SearchFilter
 from rest_framework.permissions import AllowAny
 
 from publications.models import Publication, Review
@@ -12,12 +11,17 @@ class PublicationCreateAPIView(generics.CreateAPIView):
 
     serializer_class = PublicationSerializer
 
+    def get_serializer_context(self):
+        """Метод для предоставления дополнительных данных сериализатору."""
+
+        return {"request": self.request}
+
     def perform_create(self, serializer):
         """Метод добавляет в поле author пользователя, который создает пост."""
 
-        habit = serializer.save()
-        habit.author = self.request.user
-        habit.save()
+        publication = serializer.save()
+        publication.author = self.request.user
+        publication.save()
 
 
 class PublicationListAPIView(generics.ListAPIView):
@@ -32,6 +36,7 @@ class PublicationRetrieveAPIView(generics.RetrieveAPIView):
     """Класс generics модели Publication для вывода информации о посте."""
 
     serializer_class = PublicationSerializer
+    permission_classes = (AllowAny,)
     queryset = Publication.objects.all()
 
 
@@ -67,17 +72,19 @@ class ReviewListAPIView(generics.ListAPIView):
     """Класс generics модели Review для вывода списка отзывов."""
 
     serializer_class = ReviewSerializer
+    permission_classes = (AllowAny,)
 
     def get_queryset(self):
         """Функция для получения списка отзывов. Если админ - то все, пользователь - только свои."""
 
-        return Review.objects.filter(ad=self.kwargs.get("pk"))
+        return Review.objects.filter(publication=self.kwargs.get("pk"))
 
 
 class ReviewRetrieveAPIView(generics.RetrieveAPIView):
     """Класс generics модели Review для вывода информации об отзыве."""
 
     serializer_class = ReviewSerializer
+    permission_classes = (AllowAny,)
     queryset = Review.objects.all()
 
 

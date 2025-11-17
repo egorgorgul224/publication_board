@@ -40,9 +40,7 @@ class UserUpdateAPIView(generics.UpdateAPIView):
 
     serializer_class = UserSerializer
     queryset = User.objects.all()
-    permission_classes = [
-        IsAdmin, IsAccountOwner,
-    ]
+    permission_classes = [IsAdmin | IsAccountOwner]
 
 
 class UserDestroyAPIView(generics.DestroyAPIView):

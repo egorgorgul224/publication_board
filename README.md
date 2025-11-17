@@ -14,10 +14,12 @@
      - [Модели](#publ_models) 
      - [Контроллеры и ссылки](#publ_controllers)
      - [Сериализация](#publ_serialize)
+     - [Валидаторы](#publ_validators)
    - [Приложение Users](#users_app)
      - [Модели](#users_models) 
      - [Контроллеры и ссылки](#users_controllers)
      - [Сериализация](#users_serialize)
+     - [Валидаторы](#users_validators)
      - [Классы разрешений](#users_permissions)
 5. [Тестирование и запуск](#tests)
 6. [Запуск и тестирование проекта, документация](#launch)
@@ -27,7 +29,7 @@
 
 ## Описание<a id="description"></a>
 
-В проекте реализована backend-часть для сайта с постами пользователей.
+В проекте реализована backend-часть для сайта с постами и отзывами пользователей.
 
 ---
 
@@ -65,17 +67,20 @@ pip install -r requirements.txt
 .
 ├── config
 │     ├── asgi.py, settings.py, urls.py, wsgi.py необходимые модули для работы приложения
+├── media
+│ ├── post - папка с фото для постов
 ├──publications  - приложение на django
 │ ├── migrations - папка с миграциями
-│ ├── admin.py, apps.py, models.py, serializers.py, tests.py, urls.py, views.py - модули для работы приложения
-├──config  - настройки django
+│ ├── admin.py, apps.py, models.py, serializers.py, tests.py, urls.py, validators.py, views.py - модули для работы
+приложения
+├── static
 ├── users - приложение на django
 │ ├── management
 │     ├── commands - папка с командами
 │         ├── createadmin - команда для создания суперпользователя(админа)
 │ ├── migrations - папка с миграциями
-│ ├── admin.py, apps.py, models.py, permissions.py, serializers.py, tests.py, urls.py, views.py - модули для работы
-приложения
+│ ├── admin.py, apps.py, models.py, permissions.py, serializers.py, tests.py, validators.py, urls.py, views.py - модули
+для работы приложения
 ├── .env.example - env экземпляр для доступа к закрытым данным
 ├── .flake8
 ├── .gitignore
@@ -147,6 +152,17 @@ pip install -r requirements.txt
 2. **ReviewSerializer** - сериализация модели Review. Предоставлен доступ ко всем полям, кроме author, created_at,
 updated_at.
 
+### Валидаторы<a id="publ_validators"></a>
+
+Реализована следующие валидаторы:
+1. **TitleValidator** - класс-валидатор для заголовка поста. Если автор вписал в заголовок запрещенные слова, то
+возбуждается ошибка.
+Валидатор используется в сериализаторе *PublicationSerializer*.
+
+2. **AgeValidator** - метод для валидации возраста пользователя при создании поста. Если автор поста не достиг 18 лет
+возбуждается ошибка. 
+Валидатор используется в сериализаторе *PublicationSerializer*.
+
 ---
 
 ## Приложение User <a id="users_app"></a>
@@ -186,6 +202,17 @@ last_name, birthdate, phone, date_joined.
 3. **RegisterUserSerializer** - сериализатор для контроллера UserCreateAPIView. Используется для регистрации/создания
 пользователя. Предоставлен доступ к полям: email.
 
+### Валидаторы<a id="users_validators"></a>
+
+Реализована следующие валидаторы:
+1. **PasswordValidator** - класс-валидатор для проверки пароля. Если пароль меньше 8 символов и/или не содержит цифры,
+то возбуждается ошибка.
+Валидатор используется в сериализаторе *RegisterUserSerializer*.
+
+2. **MailValidator** - класс-валидатор для проверки почты. Если домен указанной почты не разрешен, возбуждается
+ошибка(разрешены домены: mail.ru, yandex.ru).
+Валидатор используется в сериализаторе *RegisterUserSerializer*.
+
 ### Классы разрешений<a id="users_permissions"></a>
 
 Реализованы следующие разрешения:
@@ -200,7 +227,11 @@ last_name, birthdate, phone, date_joined.
 ## Запуск и тестирование проекта, документация<a id="launch"></a>
 
 1. После установки и настройки проекта в консоль введите python/python3 manage.py runserver для запуска сервера.
-2. Создание/редактирование/просмотр/удаление моделей проводится в Postman.
+2. Создание/редактирование/просмотр/удаление моделей проводится в Postman или в админ-панеле:
+```
+python manage.py createadmin - создание админа
+http://127.0.0.1:8000/admin/ - админ-панель
+```
 3. Для просмотра документации введите в адресной строке:
 ```
 http://127.0.0.1:8000/swagger/ - документация в swagger

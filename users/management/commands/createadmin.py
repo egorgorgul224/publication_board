@@ -10,7 +10,9 @@ class Command(BaseCommand):
         if User.objects.filter(email="admin@mail.ru").exists():
             self.stdout.write(self.style.ERROR("Superuser with this email already exists."))
         else:
-            user = User.objects.create(email="admin@mail.ru", first_name="Admin", last_name="Admin")
+            user = User.objects.create(
+                email="admin@mail.ru", first_name="Admin", last_name="Admin", birthdate="1999-01-01"
+            )
             user.set_password("12345")
             user.is_staff = True
             user.is_superuser = True

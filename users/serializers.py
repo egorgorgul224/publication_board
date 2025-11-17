@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from users.models import User
+from users.validators import MailValidator, PasswordValidator
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -23,6 +24,8 @@ class UserMinInfoSerializer(serializers.ModelSerializer):
 
 class RegisterUserSerializer(serializers.ModelSerializer):
     """Сериализация модели User для регистрации/создания пользователя. Предоставлен доступ к полям: email."""
+
+    validators = [PasswordValidator(field="password"), MailValidator(field="email")]
 
     class Meta:
         model = User

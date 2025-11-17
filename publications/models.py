@@ -31,8 +31,9 @@ class Review(models.Model):
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, related_name="author_reviews", blank=True, null=True
     )
-    publication = models.ForeignKey(Publication, on_delete=models.CASCADE, related_name="publ_reviews",
-                                    verbose_name="Пост")
+    publication = models.ForeignKey(
+        Publication, on_delete=models.CASCADE, related_name="publ_reviews", verbose_name="Пост"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

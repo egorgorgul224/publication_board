@@ -1,10 +1,18 @@
 from django.urls import path
 
 from publications.apps import PublicationsConfig
-from publications.views import (PublicationCreateAPIView, PublicationDestroyAPIView, PublicationListAPIView,
-                                PublicationRetrieveAPIView, PublicationUpdateAPIView,
-                                ReviewCreateAPIView, ReviewDestroyAPIView, ReviewListAPIView, ReviewRetrieveAPIView,
-                                ReviewUpdateAPIView)
+from publications.views import (
+    PublicationCreateAPIView,
+    PublicationDestroyAPIView,
+    PublicationListAPIView,
+    PublicationRetrieveAPIView,
+    PublicationUpdateAPIView,
+    ReviewCreateAPIView,
+    ReviewDestroyAPIView,
+    ReviewListAPIView,
+    ReviewRetrieveAPIView,
+    ReviewUpdateAPIView,
+)
 
 app_name = PublicationsConfig.name
 

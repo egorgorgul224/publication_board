@@ -9,7 +9,9 @@ class User(AbstractUser):
     email = models.EmailField(unique=True, verbose_name="Email", help_text="Введите email")
 
     phone = models.CharField(max_length=35, verbose_name="Телефон", blank=True, null=True)
-    birthdate = models.DateField(verbose_name="Дата рождения", help_text="Укажите дату рождения", blank=True, null=True)
+    birthdate = models.DateField(
+        verbose_name="Дата рождения", help_text="Укажите дату рождения", blank=True, null=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
