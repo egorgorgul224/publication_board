@@ -14,10 +14,12 @@
      - [Модели](#publ_models) 
      - [Контроллеры и ссылки](#publ_controllers)
      - [Сериализация](#publ_serialize)
+     - [Валидаторы](#publ_validators)
    - [Приложение Users](#users_app)
      - [Модели](#users_models) 
      - [Контроллеры и ссылки](#users_controllers)
      - [Сериализация](#users_serialize)
+     - [Валидаторы](#users_validators)
      - [Классы разрешений](#users_permissions)
 5. [Тестирование и запуск](#tests)
 6. [Запуск и тестирование проекта, документация](#launch)
@@ -27,7 +29,7 @@
 
 ## Описание<a id="description"></a>
 
-В проекте реализована backend-часть для сайта с постами пользователей.
+В проекте реализована backend-часть для сайта с постами и отзывами пользователей.
 
 ---
 
@@ -65,17 +67,20 @@ pip install -r requirements.txt
 .
 ├── config
 │     ├── asgi.py, settings.py, urls.py, wsgi.py необходимые модули для работы приложения
+├── media
+│ ├── post - папка с фото для постов
 ├──publications  - приложение на django
 │ ├── migrations - папка с миграциями
-│ ├── admin.py, apps.py, models.py, serializers.py, tests.py, urls.py, views.py - модули для работы приложения
-├──config  - настройки django
+│ ├── admin.py, apps.py, models.py, serializers.py, tests.py, urls.py, validators.py, views.py - модули для работы
+приложения
+├── static
 ├── users - приложение на django
 │ ├── management
 │     ├── commands - папка с командами
 │         ├── createadmin - команда для создания суперпользователя(админа)
 │ ├── migrations - папка с миграциями
-│ ├── admin.py, apps.py, models.py, permissions.py, serializers.py, tests.py, urls.py, views.py - модули для работы
-приложения
+│ ├── admin.py, apps.py, models.py, permissions.py, serializers.py, tests.py, validators.py, urls.py, views.py - модули
+для работы приложения
 ├── .env.example - env экземпляр для доступа к закрытым данным
 ├── .flake8
 ├── .gitignore
@@ -105,24 +110,58 @@ pip install -r requirements.txt
 ### Модели<a id="publ_models"></a>
 
 В приложении созданы следующие модели:
+- Publication - модель поста. Содержит поля title, text, image, author, created_at, updated_at.
+- Review - модель отзыв. Содержит поля text, author, publication, created_at, updated_at.
 
 ### Контроллеры и ссылки<a id="publ_controllers"></a>
 
-1. Контроллеры модели **Publication**
+1. Контроллеры модели **Publication**.
+   - Контроллер PublicationCreateAPIView для создания поста.
+   - Контроллер PublicationListAPIView для вывода списка своих постов(если admin, то всех).
+   - Контроллер PublicationRetrieveAPIView для вывода информации о посте.
+   - Контроллер PublicationUpdateAPIView для обновления информации поста.
+   - Контроллер PublicationDestroyAPIView для удаления поста.
 
 ```
-Ссылка для контроллера AdCreateAPIView: адрес//create/
+Ссылка для контроллера PublicationCreateAPIView: адрес/publications/create/
+Ссылка для контроллера PublicationListAPIView: адрес/publications/
+Ссылка для контроллера PublicationRetrieveAPIView: адрес/publications/id_поста/detail/
+Ссылка для контроллера PublicationUpdateAPIView: адрес/publications/id_поста/update/
+Ссылка для контроллера PublicationDestroyAPIView: адрес/publications/id_поста/delete/
 ```
 
-2. Контроллеры модели **Review**
+2. Контроллеры модели **Review**.
+   - Контроллер ReviewCreateAPIView для создания отзыва.
+   - Контроллер ReviewListAPIView для вывода списка отзывов.
+   - Контроллер ReviewRetrieveAPIView для вывода информации об отзыве.
+   - Контроллер ReviewUpdateAPIView для обновления информации отзыва.
+   - Контроллер ReviewDestroyAPIView для удаления отзыва.
 
 ```
-Ссылка для контроллера ReviewDestroyAPIView: адрес//
+Ссылка для контроллера ReviewCreateAPIView: адрес/review/create/
+Ссылка для контроллера ReviewListAPIView: адрес/reviews/publication/id_поста/
+Ссылка для контроллера ReviewRetrieveAPIView: адрес/review/id_отзыва/detail/
+Ссылка для контроллера ReviewUpdateAPIView: адрес/review/id_отзыва/update/
+Ссылка для контроллера ReviewDestroyAPIView: адрес/review/id_отзыва/delete/
 ```
 
 ### Сериализация<a id="publ_serialize"></a>
 
 Реализованы следующие сериализации:
+1. **PublicationSerializer** - сериализация модели Publication. Предоставлен доступ ко всем полям, кроме author.
+2. **ReviewSerializer** - сериализация модели Review. Предоставлен доступ ко всем полям, кроме author, created_at,
+updated_at.
+
+### Валидаторы<a id="publ_validators"></a>
+
+Реализована следующие валидаторы:
+1. **TitleValidator** - класс-валидатор для заголовка поста. Если автор вписал в заголовок запрещенные слова, то
+возбуждается ошибка.
+Валидатор используется в сериализаторе *PublicationSerializer*.
+
+2. **AgeValidator** - метод для валидации возраста пользователя при создании поста. Если автор поста не достиг 18 лет
+возбуждается ошибка. 
+Валидатор используется в сериализаторе *PublicationSerializer*.
 
 ---
 
@@ -135,7 +174,7 @@ pip install -r requirements.txt
 ### Модели<a id="users_models"></a>
 
 В приложении созданы следующие модели:
-- User - модель пользователь. Содержит поля email, phone, image, birthday, created_at, updated_at.
+- User - модель пользователь. Содержит поля email, phone, birthdate, created_at, updated_at.
 
 ### Контроллеры и ссылки<a id="users_controllers"></a>
 
@@ -156,26 +195,43 @@ pip install -r requirements.txt
 ### Сериализация<a id="users_serialize"></a>
 
 Реализованы следующие сериализации:
-1. **UserSerializer** - сериализатор для модели User. В Meta класс предоставлен доступ к полям: first_name, last_name,
-phone, email, date_joined.
-2. **RegisterUserSerializer** - сериализатор для контроллера UserCreateAPIView. Используется для регистрации/создания
+1. **UserSerializer** - сериализатор для модели User. В Meta класс предоставлен доступ к полям: email, first_name,
+last_name, birthdate, phone, date_joined.
+2. **UserMinInfoSerializer** - Дополнительная сериализация модели User для обычных пользователей. Предоставлен доступ
+к полям: last_name, first_name, date_joined.
+3. **RegisterUserSerializer** - сериализатор для контроллера UserCreateAPIView. Используется для регистрации/создания
 пользователя. Предоставлен доступ к полям: email.
+
+### Валидаторы<a id="users_validators"></a>
+
+Реализована следующие валидаторы:
+1. **PasswordValidator** - класс-валидатор для проверки пароля. Если пароль меньше 8 символов и/или не содержит цифры,
+то возбуждается ошибка.
+Валидатор используется в сериализаторе *RegisterUserSerializer*.
+
+2. **MailValidator** - класс-валидатор для проверки почты. Если домен указанной почты не разрешен, возбуждается
+ошибка(разрешены домены: mail.ru, yandex.ru).
+Валидатор используется в сериализаторе *RegisterUserSerializer*.
 
 ### Классы разрешений<a id="users_permissions"></a>
 
 Реализованы следующие разрешения:
-1. **IsAdReviewOwner** - проверяет, что пользователь является создателем объявления или отзыва. Если владелец -
+1. **IsPublicationReviewOwner** - проверяет, что пользователь является создателем поста или отзыва. Если владелец -
 возвращает True, иначе False.
 2. **IsAccountOwner** - проверяет, что пользователь является владельцем аккаунта. Если владелец - возвращает True,
 иначе False.
-3. **IsAdmin** - проверяет, что пользователь является админом. Если админ - возвращает True, иначе False.
+3. **IsAdmin** - проверяет, что пользователь является админом(is_staff). Если админ - возвращает True, иначе False.
 
 ---
 
 ## Запуск и тестирование проекта, документация<a id="launch"></a>
 
 1. После установки и настройки проекта в консоль введите python/python3 manage.py runserver для запуска сервера.
-2. Создание/редактирование/просмотр/удаление моделей проводится в Postman.
+2. Создание/редактирование/просмотр/удаление моделей проводится в Postman или в админ-панеле:
+```
+python manage.py createadmin - создание админа
+http://127.0.0.1:8000/admin/ - админ-панель
+```
 3. Для просмотра документации введите в адресной строке:
 ```
 http://127.0.0.1:8000/swagger/ - документация в swagger
